@@ -1,17 +1,17 @@
-$FLAGS = -g -std=c99 -pedantic -Wall -Wextra
-$PROGRAMS = main
-$OBJS = main.o gamestate.o
+FLAGS = -g -std=c99 -pedantic -Wall -Wextra
+PROGRAMS = main
+OBJS = main.o gameState.o
 
-All: $(PROGRAMS)
+all: $(PROGRAMS) 
 
-main: main.o gamestate.o
-	gcc $(FLAGS) -o main main.o gamestate.o
+main: main.o gameState.o
+	gcc $(FLAGS) -o main main.o gameState.o
 
 main.o: main.c
 	gcc $(FLAGS) -c main.c
 
-gamestate.o: gamestate.c
-	gcc $(FLAGS) -c gamestate.c
+gameState.o: gameState.c
+	gcc $(FLAGS) -c gameState.c
 
 clean:
 	rm $(PROGRAMS) $(OBJS)

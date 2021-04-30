@@ -1,7 +1,7 @@
-#include "gamestate.c"
+#include "gameState.h"
 
 int main() { 
 	initBoard();
-	initGame();
+	startGame();
 	printBoard();
 }

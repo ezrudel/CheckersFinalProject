@@ -18,7 +18,7 @@ void printBoard();
 struct pos p(int x, int y);
 int getType(struct pos p);
 int isMyPiece(struct pos p, int side);
-struct pos* getMoves(struct pos p);
+struct pos** getMoves(struct pos p);
 void king();
 int isKing(struct pos p);
 

@@ -51,34 +51,38 @@ int isMyPiece(struct pos p, int side) { // returns 1 if p contains a piece belon
 	return 0;
 }
 
-struct pos* getMoves(struct pos p) { // returns an array of positions to which the piece at p can move
+struct pos** getMoves(struct pos p) { // returns an array of pointers to positions to which the piece at p can move
 	if (getType(p) < 1) {
 		fprintf(stderr, "Error: not a piece");
 		exit(1);
 	}
 	int i = 0;
-	struct pos* moves = malloc(5*sizeof(struct pos));
+	struct pos** moves = malloc(5 * sizeof(struct pos*));;
 	if (getType(p) == COMP || isKing(p)) {
 		if (board[(p.x)-1][(p.y)+1] == BLACK) {
-			moves[i] = pos((p.x)-1, (p.y)+1);
+			struct pos q = pos((p.x)-1, (p.y)+1);
+			moves[i] = &q;
 			i++;
 		}	
 		if (board[(p.x)+1][(p.y)+1] == BLACK) {
-			moves[i] = pos((p.x)+1, (p.y)+1);
+			struct pos q = pos((p.x)+1, (p.y)+1);
+			moves[i] = &q;
 			i++;
 		}
 	}
 	if (getType(p) == USER || isKing(p)) {	
 		if (board[(p.x)-1][(p.y)-1] == BLACK) {
-			moves[i] = pos((p.x)-1, (p.y)-1);
+			struct pos q = pos((p.x)-1, (p.y)-1);
+			moves[i] = &q;
 			i++;
 		}	
 		if (board[(p.x)+1][(p.y)-1] == BLACK) {
-			moves[i] = pos((p.x)+1, (p.y)-1);
+			struct pos q = pos((p.x)+1, (p.y)-1);
+			moves[i] = &q;
 			i++;
 		}
 	}
-	moves[i] == NULL;
+	moves[i] = NULL;
 	return moves;
 }
 

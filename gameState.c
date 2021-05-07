@@ -51,32 +51,31 @@ int isMyPiece(struct pos p, int side) { // returns 1 if p contains a piece belon
 	return 0;
 }
 
-struct pos** getMoves(struct pos p) { // returns an array of pointers to positions to which the piece at p can move
+struct pos** getMoves(struct pos p) { // returns an array of pointers to positions to which the piece at p can move, terminated by a null pointer, returns null if p is not a piece
 	if (getType(p) < 1) {
-		fprintf(stderr, "Error: not a piece");
-		exit(1);
+		return NULL;
 	}
 	int i = 0;
 	struct pos** moves = malloc(5 * sizeof(struct pos*));;
-	if (getType(p) == COMP || isKing(p)) {
-		if (board[(p.x)-1][(p.y)+1] == BLACK) {
+	if ((getType(p) == COMP || isKing(p)) && (p.y < SIZE-1)) {
+		if ((board[(p.x)-1][(p.y)+1] == BLACK) && (p.x > 0)) {
 			struct pos q = pos((p.x)-1, (p.y)+1);
 			moves[i] = &q;
 			i++;
 		}	
-		if (board[(p.x)+1][(p.y)+1] == BLACK) {
+		if ((board[(p.x)+1][(p.y)+1] == BLACK) && (p.x < SIZE-1)) {
 			struct pos q = pos((p.x)+1, (p.y)+1);
 			moves[i] = &q;
 			i++;
 		}
 	}
-	if (getType(p) == USER || isKing(p)) {	
-		if (board[(p.x)-1][(p.y)-1] == BLACK) {
+	if ((getType(p) == USER || isKing(p)) && (p.y > 0)) {	
+		if ((board[(p.x)-1][(p.y)-1] == BLACK) && (p.x > 0)) {
 			struct pos q = pos((p.x)-1, (p.y)-1);
 			moves[i] = &q;
 			i++;
 		}	
-		if (board[(p.x)+1][(p.y)-1] == BLACK) {
+		if ((board[(p.x)+1][(p.y)-1] == BLACK) && (p.x < SIZE-1)) {
 			struct pos q = pos((p.x)+1, (p.y)-1);
 			moves[i] = &q;
 			i++;
@@ -99,16 +98,44 @@ void king() { // checks the whole board for pieces that are on their opponents s
 	}
 }
 
-int isKing(struct pos p) {
+int isKing(struct pos p) { // returns a positive value if position p contains a king, 0 otherwise
 	return ((getType(p) == USER_K) || (getType(p) == COMP_K));
 }
 
 void printBoard() { // prints out numeric values of the board (for testing)
+	printf("\n\n");
 	for (int y = 0; y < SIZE; y++) {
 		for (int x = 0; x < SIZE; x++) {
 			printf("\t%d", board[x][y]);
+			//printf(" (%d, %d)", x, y);
 		}
 		printf("\n\n");
 	}
 }
 
+int containsPos(struct pos** squares, struct pos square) { // returns 1 if squares contains a pos identical to square, 0 if not
+	int i = 0;
+	struct pos* current = squares[i];
+	while (current != NULL) {
+		if ((current->x == square.x) && (current->y == square.y)) {
+			return 1;
+		}
+		i++;
+		current = squares[i];
+	}
+	return 0;
+}
+
+int move(struct pos from, struct pos to) { // moves the piece at pos from to pos to. returns 0 if successful, -1 if not
+	int fromType = board[from.x][from.y];
+	if ((fromType == RED) || (fromType == BLACK)) {
+		fprintf(stderr, "error: no piece at %d,%d", from.x, from.y);
+		return -1;
+	}
+	if (!containsPos(getMoves(from), to)) {
+		return -1;
+	}
+	board[from.x][from.y] = BLACK;
+	board[to.x][to.y] = fromType;
+	return 0;
+}

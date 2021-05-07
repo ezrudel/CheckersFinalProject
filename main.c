@@ -7,7 +7,8 @@ int main() {
 	initBoard();
 	startGame();
 	printBoard();
-	
+	printf("%d\n", move(pos(0, 2), pos(1, 3)));
+	printBoard();
 
 	//if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
 	//	printf("error initalizing SDL: %s\n", SDL_GetError());

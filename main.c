@@ -5,7 +5,7 @@ int main() {
 	initBoard();
 	startGame();
 	printBoard();
-	printf("%d\n", move(pos(0, 2), pos(1, 3)));
+	printf("%d\n", move(pos(2, 6), pos(3, 5)));
 	printBoard();
 
 	

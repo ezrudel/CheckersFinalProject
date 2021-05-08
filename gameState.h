@@ -15,14 +15,14 @@
 void initBoard();
 void startGame();
 void printBoard();
-struct pos pos(int x, int y);
-int getType(struct pos p);
-int isMyPiece(struct pos p, int side);
-struct pos** getMoves(struct pos p);
+struct pos* pos(int x, int y);
+int getType(struct pos* p);
+int isMyPiece(struct pos* p, int side);
+struct pos** getMoves(struct pos* p);
 void king();
-int isKing(struct pos p);
-int containsPos(struct pos** squares, struct pos square);
-int move(struct pos from, struct pos to);
+int isKing(struct pos* p);
+int containsPos(struct pos** squares, struct pos* square);
+int move(struct pos* from, struct pos* to);
 
 struct pos {
 	int x, y;

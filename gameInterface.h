@@ -6,7 +6,7 @@
 #include "gameState.h"
 
 void printUIBoard();
-void takeInput();
+
 
 
 

@@ -3,6 +3,8 @@
 #include "gameState.h"
 
 int board[SIZE][SIZE];
+int upieces;
+int cpieces;
 
 void initBoard() { // initializes board with empty black & red squares
 	for (int x= 0; x < SIZE; x++) {
@@ -14,6 +16,8 @@ void initBoard() { // initializes board with empty black & red squares
 			}
 		}
 	}
+	upieces = 0;
+	cpieces = 0;
 }
 
 void startGame() { // initializes game with pieces in starting positions
@@ -21,6 +25,7 @@ void startGame() { // initializes game with pieces in starting positions
 		for (int x = 0; x < SIZE; x++) {
 			if (board[x][y] == BLACK) {
 				board[x][y] = COMP;
+				cpieces++;
 			}
 		}
 	}
@@ -28,6 +33,7 @@ void startGame() { // initializes game with pieces in starting positions
 		for (int x = 0; x < SIZE; x++) {
 			if (board[x][y] == BLACK) {
 				board[x][y] = USER;
+				upieces++;
 			}
 		}
 	}
@@ -51,8 +57,8 @@ void king() { // checks the whole board for pieces that are on their opponents s
 		}
 	}
 	for (int x = 0; x < SIZE; x++) {
-		if (board[x][SIZE] == COMP) {
-			board[x][SIZE] = COMP_K;
+		if (board[x][SIZE-1] == COMP) {
+			board[x][SIZE-1] = COMP_K;
 		}
 	}
 }
@@ -134,17 +140,27 @@ int move(struct pos* from, struct pos* to) { // moves the piece at pos from to p
 	if ((moves[0] == NULL) && (takes[0] == NULL)) {
 		return -1;
 	}
-	if (containsPos(getMoves(from), to)) {
+	if (containsPos(moves, to)) {
 		board[to->x][to->y] = getType(from);
 		board[from->x][from->y] = BLACK;
 		return 1;
 	}
-	if (containsPos(getTakes(from), to)) {	
+	if (containsPos(takes, to)) {
+		if (side(from) == COMP) {
+			upieces--;
+		} else {
+			cpieces--;
+		}
 		board[to->x][to->y] = getType(from);
 		board[from->x][from->y] = BLACK;
-
+		int xdir = to->x - from->x;
+		xdir = xdir / abs(xdir);
+		int ydir = to->y - from->y;
+		ydir = ydir / abs(ydir);
+		board[from->x+xdir][from->y+ydir] = BLACK;
 		return 1;
 	}
+	return 0;
 }
 
 int side(struct pos* p) { // returns the side that p is on, or 0/-1 if p is not a piece
@@ -183,28 +199,49 @@ struct pos** getTakes(struct pos* p) { // returns an array of pointers to pieces
 	struct pos** takes = malloc(5 * sizeof(struct pos*));;
 	if ((getType(p) == COMP) || isKing(p)) {
 		if (canTake(p, -1, 1)) {
-			struct pos* q = pos((p->x)-1, (p->y)+1);
+			struct pos* q = pos((p->x)-2, (p->y)+2);
 			takes[i] = q;
 			i++;
 		}	
 		if (canTake(p, 1, 1)) {
-			struct pos* q = pos((p->x)+1, (p->y)+1);
+			struct pos* q = pos((p->x)+2, (p->y)+2);
 			takes[i] = q;
 			i++;
 		}
 	}
 	if ((getType(p) == USER) || isKing(p)) {	
 		if (canTake(p, -1, -1)) {
-			struct pos* q = pos((p->x)-1, (p->y)-1);
+			struct pos* q = pos((p->x)-2, (p->y)-2);
 			takes[i] = q;
 			i++;
 		}	
 		if (canTake(p, 1, -1)) {
-			struct pos* q = pos((p->x)+1, (p->y)-1);
+			struct pos* q = pos((p->x)+2, (p->y)-2);
 			takes[i] = q;
 			i++;
 		}
 	}
 	takes[i] = NULL;
 	return takes;
+}
+
+void reverse(struct pos* from, struct pos* to) { // reverses the move between from and to
+	int temp = getType(from);
+	board[from->x][from->y] = getType(to);
+	board[to->x][to->y] = temp;
+	int xdif = to->x - from->x;
+	int ydif = to->y - from->y;
+	if (abs(xdif) == 2) {
+		board[from->x+(xdif/2)][from->y+(ydif/2)] = opp(side(from));
+	}
+}
+
+int winner() { // returns the value of the winner, 0 if no one has one
+	if (upieces == 0) {
+		return COMP;
+	}
+	if (cpieces == 0) {
+		return USER;
+	}
+	return 0;
 }

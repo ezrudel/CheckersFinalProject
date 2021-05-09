@@ -1,14 +1,27 @@
 
 #include "gameState.h"
+#include "gameInterface.h"
+#include "ai.h"
 
 int main() { 
 	initBoard();
 	startGame();
-	printBoard();
-	printf("%d\n", move(pos(2, 6), pos(3, 5)));
-	printBoard();
-
+	printUIBoard();
+	while(winner() == 0) {
+		userTurn();
+		king();
+		printUIBoard();
+		compTurn();
+		king();
+		printUIBoard();
+	}
 	
+	if (winner() == COMP) {
+		printf("GAME OVER. YOU LOSE!");
+	} else {
+		printf("CONGRATULATIONS! YOU WON");
+	}
+
 	return 0;
 
 }

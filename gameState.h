@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #define SIZE 8 // dimensions of board
 #define RED -1 // red square (we're only playing on black squares)
@@ -42,6 +43,10 @@ int inBounds(struct pos* p); // determines whether p is within the board
 int canTake(struct pos* p, int x, int y); // determines whether the piece at p can take another piece in the given direction x,y (x and y will be 1 or -1)
 
 struct pos** getTakes(struct pos* p); // returns an array of pointers to pieces that p can take, terminated by a null pointer, returns null if p is not a piece
+
+void reverse(struct pos* from, struct pos* to); // reverses the move between from and to
+
+int winner(); // returns the winner, 0 if no winner yet
 
 
 struct pos { // represents the position on the board (x,y) -- ONLY PASS POINTERS TO THIS STRUCT, NOT THE STRUCT ITSELF
